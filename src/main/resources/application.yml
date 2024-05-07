@@ -20,3 +20,8 @@ spring:
           keycloak:
             issuer-uri: ${issuer_uri}
             jwk-set-uri: ${jwk-set-uri}
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8090/realms/LibraryAppRealm/protocol/openid-connect/certs
+  config:
+    import: file:env.properties
