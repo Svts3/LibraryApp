@@ -1,0 +1,28 @@
+version: '3.6'
+
+services:
+  keycloak:
+    image: keycloak/keycloak
+    container_name: keycloak_container
+    env_file:
+      keycloak.env
+    command: start-dev
+    depends_on:
+      - keycloak_db
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    ports:
+      - 8090:8080
+
+  keycloak_db:
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      postgres.env
+
+volumes:
+  postgres_data:
+  keycloak_data:
+
+
