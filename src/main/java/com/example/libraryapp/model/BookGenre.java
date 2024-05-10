@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "book_genres")
 @AllArgsConstructor
@@ -20,6 +22,4 @@ public class BookGenre {
 
     @Column(name = "genre_name")
     private String genreName;
-
-
 }

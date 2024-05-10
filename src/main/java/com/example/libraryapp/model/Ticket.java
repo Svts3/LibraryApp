@@ -21,4 +21,11 @@ public class Ticket {
     @Column(name = "fine")
     private Double fine;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ticket_type_id", referencedColumnName = "id")
+    private TicketType ticketType;
+
+    @ManyToOne
+    private UserReturn userReturn;
+
 }

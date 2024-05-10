@@ -20,4 +20,5 @@ public class BookStatus {
 
     @Column(name = "status_name")
     private String statusName;
+
 }

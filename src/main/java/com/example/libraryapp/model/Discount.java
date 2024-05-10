@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "discounts")
 @AllArgsConstructor
@@ -18,5 +20,11 @@ public class Discount {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(name = "value")
     private Double value;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "discount_measure_id", referencedColumnName = "id")
+    private DiscountMeasure discountMeasure;
+
 }

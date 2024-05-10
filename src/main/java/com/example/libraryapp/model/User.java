@@ -10,6 +10,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -40,10 +42,22 @@ public class User {
     private String phoneNumber;
 
     @CreatedDate
+    @Column(name = "creation_date")
     private Date creationDate;
 
     @LastModifiedDate
+    @Column(name = "last_modified_date")
     private Date lastModifiedDate;
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserBorrow>userBorrows;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private UserCategory userCategory;
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserReturn> userReturns;
 
 
 }

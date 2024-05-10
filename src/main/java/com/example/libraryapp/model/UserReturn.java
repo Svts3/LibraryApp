@@ -5,35 +5,34 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "user_borrows")
+@Table(name = "user_returns")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserBorrow {
+public class UserReturn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name = "issue_date")
-    private Date issueDate;
+    @Column(name = "return_date")
+    private Date returnDate;
 
-    @Column(name = "deadline_date")
-    private Date deadlineDate;
-
-    @ManyToOne
-    private User user;
 
     @ManyToOne
     @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book book;
 
+    @OneToMany(mappedBy = "userReturn")
+    private Set<Ticket> tickets;
+
+    @ManyToOne
+    private User user;
 }
