@@ -14,16 +14,16 @@ import java.util.Optional;
 @Repository
 public interface UserBorrowRepository extends JpaRepository<UserBorrow, Long> {
 
-    Collection<UserBorrow> findByUserId(Long userId);
+    List<UserBorrow> findByUserId(Long userId);
 
-    Collection<UserBorrow>findByBookId(Long bookId);
+    List<UserBorrow>findByBookId(Long bookId);
 
     @Query("SELECT ub FROM UserBorrow ub WHERE ub.user.id=:userId and ub.deadlineDate > CURRENT_DATE")
-    Collection<UserBorrow>findOverdueBorrowsByUserId(@Param("userId") Long userId);
+    List<UserBorrow>findOverdueBorrowsByUserId(@Param("userId") Long userId);
     @Query("SELECT ub FROM UserBorrow ub WHERE ub.user.id=:userId and ub.deadlineDate < CURRENT_DATE")
-    Collection<UserBorrow>findEarlyBorrowsByUserId(@Param("userId")Long userId);
+    List<UserBorrow>findEarlyBorrowsByUserId(@Param("userId")Long userId);
     @Query("SELECT ub FROM UserBorrow ub WHERE ub.issueDate > :min and ub.issueDate < :max")
-    Collection<UserBorrow>findByIssueIdInRange(@Param("min")Date min, @Param("max")Date max);
+    List<UserBorrow>findByIssueIdInRange(@Param("min")Date min, @Param("max")Date max);
 
 
 }
