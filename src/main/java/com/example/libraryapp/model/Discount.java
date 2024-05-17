@@ -27,4 +27,8 @@ public class Discount {
     @JoinColumn(name = "discount_measure_id", referencedColumnName = "id")
     private DiscountMeasure discountMeasure;
 
+    public Discount(Double value, DiscountMeasure discountMeasure) {
+        this.value = value;
+        this.discountMeasure = discountMeasure;
+    }
 }
