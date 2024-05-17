@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TicketService extends GeneralService<Ticket, Long> {
 
-    Ticket assignTicketToUser(String ticketType, Double fine, Long userId, Long bookId);
+    Ticket assignTicketToUserReturn(String ticketType, Double fine, Long userId, Long userReturnId);
 
-    Ticket cancelTicketForUser(Long ticketId, Long userId);
+    Ticket cancelTicketForUserReturn(Long ticketId, Long userId);
 
     Ticket payTicket(Long userId, Long ticketId);
 
