@@ -12,5 +12,7 @@ public interface TicketBuilder extends GeneralBuilder<Ticket>{
 
     void setTicketType(TicketType ticketType);
 
+    void setIsPaid(Boolean isPaid);
+
     void setUserReturn(UserReturn userReturn);
 }

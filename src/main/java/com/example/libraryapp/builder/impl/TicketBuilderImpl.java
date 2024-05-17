@@ -31,6 +31,11 @@ public class TicketBuilderImpl implements TicketBuilder {
     }
 
     @Override
+    public void setIsPaid(Boolean isPaid) {
+        this.ticket.setIsPaid(isPaid);
+    }
+
+    @Override
     public void setUserReturn(UserReturn userReturn) {
         this.ticket.setUserReturn(userReturn);
     }
