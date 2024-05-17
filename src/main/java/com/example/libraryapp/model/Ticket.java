@@ -25,6 +25,9 @@ public class Ticket {
     @JoinColumn(name = "ticket_type_id", referencedColumnName = "id")
     private TicketType ticketType;
 
+    @Column(name = "is_paid")
+    private Boolean isPaid;
+
     @ManyToOne
     private UserReturn userReturn;
 
