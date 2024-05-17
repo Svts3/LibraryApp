@@ -9,6 +9,9 @@ public class TicketBuilderImpl implements TicketBuilder {
 
     private Ticket ticket;
 
+    public TicketBuilderImpl(Ticket ticket) {
+        this.ticket = ticket;
+    }
 
     @Override
     public Ticket build() {
