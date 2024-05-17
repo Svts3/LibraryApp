@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 env.properties
 keycloak.env
+keycloak_postgres.env
 postgres.env
 
 ### STS ###
