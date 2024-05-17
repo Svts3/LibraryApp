@@ -30,5 +30,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("SELECT b FROM Book b JOIN UserBorrow ub on ub.book.id=b.id and ub.user.id=:userId")
     List<Book> findByUserId(@Param("userId") Long userId);
 
+    List<Book>findByAuthorsId(Long authorId);
+
 
 }

@@ -14,10 +14,5 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     List<Author> findByBooksId(Long bookId);
 
-    Optional<Author>findByFirstName(String firstName);
-
-    Optional<Author>findByLastName(String lastName);
-
-
-
+    Optional<Author>findByFirstNameAndLastName(String firstName, String lastName);
 }
