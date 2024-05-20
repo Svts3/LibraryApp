@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.Type;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -52,8 +54,8 @@ public class Book {
     inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
     private Set<BookGenre> genres;
 
-    @ManyToOne
-    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "book_status")
     private BookStatus bookStatus;
 
     @ManyToOne

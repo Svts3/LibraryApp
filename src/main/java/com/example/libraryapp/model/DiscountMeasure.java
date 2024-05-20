@@ -6,18 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "discount_measures")
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
-@Setter
-public class DiscountMeasure {
+public enum DiscountMeasure {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    PERCENTAGE("percentage"), FIXED_AMOUNT("fixed_amount");
 
-    @Column(name = "measure_name")
     private String measureName;
+
+    DiscountMeasure(String measureName) {
+        this.measureName = measureName;
+    }
 }

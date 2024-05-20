@@ -23,8 +23,8 @@ public class Discount {
     @Column(name = "value")
     private Double value;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "discount_measure_id", referencedColumnName = "id")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "discount_measure")
     private DiscountMeasure discountMeasure;
 
     public Discount(Double value, DiscountMeasure discountMeasure) {

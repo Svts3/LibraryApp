@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "conver_types")
+@Table(name = "cover_types")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

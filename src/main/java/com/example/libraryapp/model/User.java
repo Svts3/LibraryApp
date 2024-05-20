@@ -41,6 +41,9 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "balance")
+    private Double balance;
+
     @CreatedDate
     @Column(name = "creation_date")
     private Date creationDate;

@@ -6,19 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "book_statuses")
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
-@Setter
-public class BookStatus {
+public enum BookStatus {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    IS_AVAILABLE("is_available"), IS_NOT_AVAILABLE("is_not_available"),
+    IS_BORROWED("is_borrowed");
 
-    @Column(name = "status_name")
     private String statusName;
 
+    BookStatus(String statusName) {
+        this.statusName = statusName;
+    }
 }
