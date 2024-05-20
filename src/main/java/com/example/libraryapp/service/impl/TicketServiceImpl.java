@@ -1,9 +1,7 @@
 package com.example.libraryapp.service.impl;
 
 import com.example.libraryapp.builder.TicketBuilder;
-import com.example.libraryapp.builder.UserReturnBuilder;
 import com.example.libraryapp.builder.impl.TicketBuilderImpl;
-import com.example.libraryapp.builder.impl.UserReturnBuilderImpl;
 import com.example.libraryapp.exception.TicketNotFoundException;
 import com.example.libraryapp.exception.TicketTypeNotFoundException;
 import com.example.libraryapp.exception.UserReturnNotFoundException;
@@ -18,10 +16,7 @@ import com.example.libraryapp.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -32,6 +27,7 @@ public class TicketServiceImpl implements TicketService {
 
     private UserReturnRepository userReturnRepository;
 
+    private TicketMapper ticketMapper;
     @Autowired
     public TicketServiceImpl(TicketRepository ticketRepository, TicketTypeRepository ticketTypeRepository,
                              UserReturnRepository userReturnRepository) {
@@ -39,7 +35,6 @@ public class TicketServiceImpl implements TicketService {
         this.ticketTypeRepository = ticketTypeRepository;
         this.userReturnRepository = userReturnRepository;
     }
-    private TicketMapper ticketMapper;
 
     @Override
     public List<Ticket> findAll() {
@@ -72,26 +67,32 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Ticket assignTicketToUserReturn(String ticketType, Double fine, Long userId, Long userReturnId) {
+    public UserReturn assignTicketToUserReturn(String ticketType, Double fine, Long userId, Long userReturnId) {
         TicketType ticketType1 = ticketTypeRepository.findByTicketType(ticketType).orElseThrow(
-                ()->new TicketTypeNotFoundException(String.format("TicketType[type=%s] was not found!", ticketType)));
-
-        TicketBuilder ticketBuilder = new TicketBuilderImpl(new Ticket());
-        ticketBuilder.setTicketType(ticketType1);
-        ticketBuilder.setFine(fine);
-
+                ()->new TicketTypeNotFoundException(String.format("TicketType[type=%s] was not found!",
+                        ticketType)));
         UserReturn userReturn = userReturnRepository.findById(userReturnId).orElseThrow(
-                ()->new UserReturnNotFoundException(String.format("UserReturn[ID=%d] was not found!", userReturnId)));
-        ticketBuilder.setUserReturn(userReturn);
-        return ticketRepository.save(ticketBuilder.build());
+                ()->new UserReturnNotFoundException(String.format("UserReturn[ID=%d] was not found!",
+                        userReturnId)));
+
+        Ticket ticket = new TicketBuilderImpl()
+        .setTicketType(ticketType1)
+        .setFine(fine)
+        .setUserReturn(userReturn)
+                .build();
+
+        ticketRepository.save(ticket);
+        return userReturn;
     }
 
     @Override
-    public Ticket cancelTicketForUserReturn(Long ticketId, Long userReturnId) {
+    public UserReturn revokeTicketForUserReturn(Long ticketId, Long userReturnId) {
         UserReturn userReturn = userReturnRepository.findById(userReturnId).orElseThrow(
                 ()->new UserReturnNotFoundException(String.format("UserReturn[ID=%d] was not found!", userReturnId)));
-        Ticket ticket = userReturn.getTickets().stream().filter(t->t.getId().equals(ticketId)).toList().getFirst();
-        return deleteById(ticket.getId());
+
+        userReturn.getTickets().removeIf(t->t.getId().equals(ticketId));
+
+        return userReturnRepository.save(userReturn);
     }
 
     @Override

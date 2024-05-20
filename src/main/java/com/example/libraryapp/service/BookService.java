@@ -1,15 +1,11 @@
 package com.example.libraryapp.service;
 
 import com.example.libraryapp.model.Book;
-import com.example.libraryapp.model.BookStatus;
-import com.example.libraryapp.model.Discount;
 
 import java.util.Date;
 import java.util.List;
 
-public interface BookService extends GeneralService<Book, Long>{
-
-    Book assignDiscountToBook(Long discountMeasureId, Double discountValue, Long bookId);
+public interface BookService extends Findable<Book, Long>, Persistable<Book, Long>, Updatable<Book, Long>{
 
     Book findByTitle(String title);
     List<Book> findByBookStatus(String bookStatus);

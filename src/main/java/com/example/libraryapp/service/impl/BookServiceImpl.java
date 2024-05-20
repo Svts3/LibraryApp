@@ -1,15 +1,19 @@
 package com.example.libraryapp.service.impl;
 
-import com.example.libraryapp.builder.UserBorrowBuilder;
 import com.example.libraryapp.builder.UserReturnBuilder;
 import com.example.libraryapp.builder.impl.UserBorrowBuilderImpl;
 import com.example.libraryapp.builder.impl.UserReturnBuilderImpl;
-import com.example.libraryapp.exception.*;
+import com.example.libraryapp.exception.BookNotAvailableException;
+import com.example.libraryapp.exception.BookNotFoundException;
+import com.example.libraryapp.exception.BookReturnException;
 import com.example.libraryapp.mapper.BookMapper;
 import com.example.libraryapp.model.*;
-import com.example.libraryapp.repository.*;
+import com.example.libraryapp.repository.BookRepository;
 import com.example.libraryapp.service.BookService;
+import com.example.libraryapp.service.UserBorrowService;
+import com.example.libraryapp.service.UserReturnService;
 import com.example.libraryapp.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,59 +27,33 @@ public class BookServiceImpl implements BookService {
 
     private BookRepository bookRepository;
 
-    private UserBorrowRepository userBorrowRepository;
-
-    private DiscountRepository discountRepository;
-
-    private DiscountMeasureRepository discountMeasureRepository;
+    private UserBorrowService userBorrowService;
 
     private UserService userService;
 
-    private BookStatusRepository bookStatusRepository;
 
-    private UserReturnRepository userReturnRepository;
+    private UserReturnService userReturnService;
+
+    private UserBalanceServiceImpl userBalanceService;
+
 
     private BookMapper bookMapper;
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository, UserBorrowRepository userBorrowRepository,
-                           DiscountRepository discountRepository,
-                           DiscountMeasureRepository discountMeasureRepository,
-                           UserService userService, BookStatusRepository bookStatusRepository,
-                           UserReturnRepository userReturnRepository) {
+    public BookServiceImpl(BookRepository bookRepository, UserBorrowService userBorrowService,
+                           UserService userService,
+                           UserReturnService userReturnService, UserBalanceServiceImpl userBalanceService) {
         this.bookRepository = bookRepository;
-        this.userBorrowRepository = userBorrowRepository;
-        this.discountRepository = discountRepository;
-        this.discountMeasureRepository = discountMeasureRepository;
+        this.userBorrowService = userBorrowService;
         this.userService = userService;
-        this.bookStatusRepository = bookStatusRepository;
-        this.userReturnRepository = userReturnRepository;
-    }
-
-    @Override
-    public Book assignDiscountToBook(Long discountMeasureId, Double discountValue, Long bookId) {
-        DiscountMeasure discountMeasure  = discountMeasureRepository.findById(discountMeasureId)
-                .orElseThrow(
-                        ()->new DiscountMeasureNotFoundException(
-                                String.format("DiscountMeasure[ID=%d]was not found!", discountMeasureId)));
-
-        Optional<Discount> discountOptional = discountRepository
-                .findByValueAndDiscountMeasure(discountValue, discountMeasure.getMeasureName());
-
-        if(discountOptional.isEmpty()){
-            discountOptional = Optional.of(discountRepository.save(new Discount(discountValue, discountMeasure)));
-        }
-
-        Book book = findById(bookId);
-        book.setDiscount(discountOptional.get());
-
-        return save(book);
+        this.userReturnService = userReturnService;
+        this.userBalanceService = userBalanceService;
     }
 
     @Override
     public Book findByTitle(String title) {
         return bookRepository.findByTitle(title).orElseThrow(
-                ()->new BookNotFoundException(String.format("Book[title=%s] was not found!",title)));
+                () -> new BookNotFoundException(String.format("Book[title=%s] was not found!", title)));
     }
 
     @Override
@@ -103,45 +81,63 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findByUserId(userId);
     }
 
+    @Transactional
     @Override
     public Book borrowBook(Long userId, Long bookId, Date issueDate, Date deadlineDate) {
-        UserBorrowBuilder userBorrowBuilder = new UserBorrowBuilderImpl(new UserBorrow());
         Book book = findById(bookId);
-
-        if(book.getBookStatus().getStatusName().equalsIgnoreCase("Not Available")){
-            throw new BookNotAvailableException(String.format("Book[ID=%d] is not available", bookId));
-        }
-
-        userBorrowBuilder.setBook(book);
         User user = userService.findById(userId);
 
-        userBorrowBuilder.setUser(user);
-        userBorrowBuilder.setDeadlineDate(deadlineDate);
-        userBorrowBuilder.setIssueDate(issueDate);
-        return save(userBorrowBuilder.build().getBook());
+        this.checkBookStatus(book);
+
+        UserBorrow userBorrow = new UserBorrowBuilderImpl()
+                .setBook(book)
+                .setUser(user)
+                .setDeadlineDate(deadlineDate)
+                .setIssueDate(issueDate)
+                .build();
+
+        userBorrowService.save(userBorrow);
+
+        userBalanceService.withdrawFromUserBalance(user.getId(), book.getSecurityDeposit());
+
+        book.setBookStatus(BookStatus.IS_BORROWED);
+        bookRepository.save(book);
+
+        return userBorrow.getBook();
     }
 
+    private void checkBookStatus(Book book) {
+        if (book.getBookStatus().equals(BookStatus.IS_NOT_AVAILABLE)) {
+            throw new BookNotAvailableException(String.format("Book[ID=%d] is not available", book.getId()));
+        } else if (book.getBookStatus().equals(BookStatus.IS_BORROWED)) {
+            throw new BookNotAvailableException(String.format("Book[ID=%d] is borrowed", book.getId()));
+        }
+    }
+
+    @Transactional
     @Override
     public Book returnBook(Long userId, Long bookId) {
-        Optional<UserBorrow> userBorrow = userBorrowRepository.findByUserId(userId)
+        Optional<UserBorrow> userBorrow = userBorrowService.findByUserId(userId)
                 .stream()
-                .filter((borrow)->borrow.getBook().getId().equals(bookId))
+                .filter((borrow) -> borrow.getBook().getId().equals(bookId))
                 .max(Comparator.comparing(UserBorrow::getIssueDate));
 
-        if(userBorrow.isEmpty()){
+        if (userBorrow.isEmpty()) {
             throw new BookReturnException(String.format("Book[ID=%d] was not borrowed by User[ID=%d]",
                     bookId, userId));
         }
-        UserReturnBuilder userReturnBuilder = new UserReturnBuilderImpl(new UserReturn());
 
-        userReturnBuilder.setBook(userBorrow.get().getBook());
-        userReturnBuilder.setUser(userBorrow.get().getUser());
-        UserReturn userReturn = userReturnBuilder.build();
-        userReturn = userReturnRepository.save(userReturn);
+        UserReturn userReturn = new UserReturnBuilderImpl()
+        .setBook(userBorrow.get().getBook())
+        .setUser(userBorrow.get().getUser())
+                .build();
+        userReturn = userReturnService.save(userReturn);
+
         Book book = userReturn.getBook();
-        book.setBookStatus(bookStatusRepository.findByStatusName("Available")
-                .orElseThrow(()->new BookStatusNotFoundException(
-                        String.format("BookStatus[ID=%d] was not found!", book.getBookStatus().getId()))));
+        book.setBookStatus(BookStatus.IS_AVAILABLE);
+        userBalanceService.depositToUserBalance(userId, book.getSecurityDeposit());
+
+        bookRepository.save(book);
         return userReturn.getBook();
     }
 
@@ -158,9 +154,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book findById(Long aLong) {
         return bookRepository.findById(aLong).orElseThrow(
-                ()->new BookNotFoundException(String.format("Book [ID=%d] was not found!", aLong)));
+                () -> new BookNotFoundException(String.format("Book [ID=%d] was not found!", aLong)));
     }
 
+    @Transactional
     @Override
     public Book update(Book entity, Long aLong) {
         Book book = findById(aLong);
@@ -168,6 +165,7 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+    @Transactional
     @Override
     public Book deleteById(Long aLong) {
         Book book = findById(aLong);

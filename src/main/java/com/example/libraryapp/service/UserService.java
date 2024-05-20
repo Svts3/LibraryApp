@@ -1,12 +1,11 @@
 package com.example.libraryapp.service;
 
 import com.example.libraryapp.model.User;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface UserService extends GeneralService<User, Long>{
+public interface UserService extends
+        Findable<User, Long>, Persistable<User, Long>, Updatable<User, Long>{
 
     User findByEmail(String email);
 

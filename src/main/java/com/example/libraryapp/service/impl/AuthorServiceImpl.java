@@ -5,6 +5,7 @@ import com.example.libraryapp.mapper.AuthorMapper;
 import com.example.libraryapp.model.Author;
 import com.example.libraryapp.repository.AuthorRepository;
 import com.example.libraryapp.service.AuthorService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,7 @@ public class AuthorServiceImpl implements AuthorService {
                 ()->new AuthorNotFoundException(String.format("Author[ID=%d] was not found!", aLong)));
     }
 
+    @Transactional
     @Override
     public Author update(Author entity, Long aLong) {
         Author author = findById(aLong);
@@ -57,6 +59,7 @@ public class AuthorServiceImpl implements AuthorService {
         return author;
     }
 
+    @Transactional
     @Override
     public Author deleteById(Long aLong) {
        Author author = findById(aLong);
