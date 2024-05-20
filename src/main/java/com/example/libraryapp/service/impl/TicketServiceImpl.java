@@ -13,6 +13,7 @@ import com.example.libraryapp.repository.TicketRepository;
 import com.example.libraryapp.repository.TicketTypeRepository;
 import com.example.libraryapp.repository.UserReturnRepository;
 import com.example.libraryapp.service.TicketService;
+import com.example.libraryapp.service.UserBalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +28,16 @@ public class TicketServiceImpl implements TicketService {
 
     private UserReturnRepository userReturnRepository;
 
+    private UserBalanceService userBalanceService;
+
     private TicketMapper ticketMapper;
     @Autowired
     public TicketServiceImpl(TicketRepository ticketRepository, TicketTypeRepository ticketTypeRepository,
-                             UserReturnRepository userReturnRepository) {
+                             UserReturnRepository userReturnRepository, UserBalanceService userBalanceService) {
         this.ticketRepository = ticketRepository;
         this.ticketTypeRepository = ticketTypeRepository;
         this.userReturnRepository = userReturnRepository;
+        this.userBalanceService = userBalanceService;
     }
 
     @Override
@@ -98,6 +102,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Ticket payTicket(Long userId, Long ticketId) {
         Ticket ticket = findById(ticketId);
+        userBalanceService.withdrawFromUserBalance(userId, ticket.getFine());
         ticket.setIsPaid(true);
         return ticketRepository.save(ticket);
     }
