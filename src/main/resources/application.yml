@@ -24,6 +24,6 @@ spring:
             jwk-set-uri: ${jwk-set-uri}
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8090/realms/LibraryAppRealm/protocol/openid-connect/certs
+          jwk-set-uri: ${jwk-set-uri}
   config:
     import: file:env.properties
