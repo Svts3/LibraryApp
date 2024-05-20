@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserCategory {
+public class UserCategory{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
