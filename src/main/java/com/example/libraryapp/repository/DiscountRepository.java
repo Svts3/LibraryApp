@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface DiscountRepository extends JpaRepository<Discount, Long> {
 
-    @Query("SELECT d FROM Discount d WHERE d.value=:value AND d.discountMeasure.measureName=:measure")
+    @Query("SELECT d FROM Discount d WHERE d.value=:value AND d.discountMeasure=:measure")
     Optional<Discount>findByValueAndDiscountMeasure(@Param("value") Double value,
                                                     @Param("measure") String measure);
 }

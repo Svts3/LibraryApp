@@ -13,5 +13,4 @@ public interface UserReturnRepository extends JpaRepository<UserReturn, Long> {
     List<UserReturn>findByUserId(Long userId);
 
     List<UserReturn>findByBookId(Long bookId);
-
 }
