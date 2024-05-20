@@ -10,21 +10,23 @@ import java.util.Set;
 
 public interface UserBuilder extends GeneralBuilder<User>{
 
-    void setId(Long id);
-    void setFirstName(String firstName);
+    UserBuilder setId(Long id);
+    UserBuilder setFirstName(String firstName);
 
-    void setLastName(String lastName);
+    UserBuilder setLastName(String lastName);
 
-    void setEmail(String email);
+    UserBuilder setEmail(String email);
 
-    void setPhoneNumber(String phoneNumber);
+    UserBuilder setPhoneNumber(String phoneNumber);
 
-    void setCreationDate(Date date);
-    void setLastModifiedDate(Date date);
+    UserBuilder setCreationDate(Date date);
+    UserBuilder setLastModifiedDate(Date date);
 
-    void setUserBorrows(Set<UserBorrow> userBorrows);
+    UserBuilder setUserBorrows(Set<UserBorrow> userBorrows);
 
-    void setUserCategory(UserCategory userCategory);
+    UserBuilder setUserCategory(UserCategory userCategory);
 
-    void setUserReturn(Set<UserReturn> userReturn);
+    UserBuilder setUserReturn(Set<UserReturn> userReturn);
+
+    UserBuilder setBalance(Double balance);
 }

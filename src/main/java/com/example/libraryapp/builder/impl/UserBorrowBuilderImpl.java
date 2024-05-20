@@ -11,8 +11,12 @@ public class UserBorrowBuilderImpl implements UserBorrowBuilder {
 
     private UserBorrow userBorrow;
 
-    public UserBorrowBuilderImpl(UserBorrow userBorrow) {
+    private UserBorrowBuilderImpl(UserBorrow userBorrow) {
         this.userBorrow = userBorrow;
+    }
+
+    public UserBorrowBuilderImpl() {
+        userBorrow = new UserBorrow();
     }
 
     @Override
@@ -21,27 +25,33 @@ public class UserBorrowBuilderImpl implements UserBorrowBuilder {
     }
 
     @Override
-    public void setId(Long id) {
+    public UserBorrowBuilder setId(Long id) {
         this.userBorrow.setId(id);
+        return new UserBorrowBuilderImpl(userBorrow);
     }
 
     @Override
-    public void setIssueDate(Date issueDate) {
+    public UserBorrowBuilder setIssueDate(Date issueDate) {
         this.userBorrow.setIssueDate(issueDate);
+        return new UserBorrowBuilderImpl(userBorrow);
     }
 
     @Override
-    public void setDeadlineDate(Date deadlineDate) {
+    public UserBorrowBuilder setDeadlineDate(Date deadlineDate) {
         this.userBorrow.setDeadlineDate(deadlineDate);
+        return new UserBorrowBuilderImpl(userBorrow);
     }
 
     @Override
-    public void setUser(User user) {
+    public UserBorrowBuilder setUser(User user) {
         this.userBorrow.setUser(user);
+        return new UserBorrowBuilderImpl(userBorrow);
     }
 
     @Override
-    public void setBook(Book book) {
+    public UserBorrowBuilder setBook(Book book) {
         this.userBorrow.setBook(book);
+        return new UserBorrowBuilderImpl(userBorrow);
     }
+
 }

@@ -13,58 +13,78 @@ public class UserBuilderImpl implements UserBuilder {
 
     private User user;
 
-    public UserBuilderImpl(User user) {
+    private UserBuilderImpl(User user) {
         this.user = user;
     }
 
+    public UserBuilderImpl() {
+        user = new User();
+    }
+
     @Override
-    public void setId(Long id) {
+    public UserBuilder setId(Long id) {
         this.user.setId(id);
+        return new UserBuilderImpl(user);
     }
 
     @Override
-    public void setFirstName(String firstName) {
+    public UserBuilder setFirstName(String firstName) {
         this.user.setFirstName(firstName);
+        return new UserBuilderImpl(user);
     }
 
     @Override
-    public void setLastName(String lastName) {
+    public UserBuilder setLastName(String lastName) {
         this.user.setLastName(lastName);
+        return new UserBuilderImpl(user);
     }
 
     @Override
-    public void setEmail(String email) {
+    public UserBuilder setEmail(String email) {
         this.user.setEmail(email);
+        return new UserBuilderImpl(user);
     }
 
     @Override
-    public void setPhoneNumber(String phoneNumber) {
+    public UserBuilder setPhoneNumber(String phoneNumber) {
         this.user.setPhoneNumber(phoneNumber);
+        return new UserBuilderImpl(user);
     }
 
     @Override
-    public void setCreationDate(Date date) {
+    public UserBuilder setCreationDate(Date date) {
         this.user.setCreationDate(date);
+        return new UserBuilderImpl(user);
     }
 
     @Override
-    public void setLastModifiedDate(Date date) {
+    public UserBuilder setLastModifiedDate(Date date) {
         this.user.setLastModifiedDate(date);
+        return new UserBuilderImpl(user);
     }
 
     @Override
-    public void setUserBorrows(Set<UserBorrow> userBorrows) {
+    public UserBuilder setUserBorrows(Set<UserBorrow> userBorrows) {
         this.user.setUserBorrows(userBorrows);
+        return new UserBuilderImpl(user);
     }
 
     @Override
-    public void setUserCategory(UserCategory userCategory) {
+    public UserBuilder setUserCategory(UserCategory userCategory) {
         this.user.setUserCategory(userCategory);
+        return new UserBuilderImpl(user);
     }
 
     @Override
-    public void setUserReturn(Set<UserReturn> userReturns) {
-            this.user.setUserReturns(userReturns);
+    public UserBuilder setUserReturn(Set<UserReturn> userReturns) {
+        this.user.setUserReturns(userReturns);
+        return new UserBuilderImpl(user);
+    }
+
+    @Override
+    public UserBuilder setBalance(Double balance) {
+        this.user.setBalance(balance);
+        return new UserBuilderImpl(user);
     }
 
     @Override

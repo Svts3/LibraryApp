@@ -13,8 +13,12 @@ public class UserReturnBuilderImpl implements UserReturnBuilder {
 
     private UserReturn userReturn;
 
-    public UserReturnBuilderImpl(UserReturn userReturn) {
+    private UserReturnBuilderImpl(UserReturn userReturn) {
         this.userReturn = userReturn;
+    }
+
+    public UserReturnBuilderImpl() {
+        userReturn = new UserReturn();
     }
 
     @Override
@@ -23,27 +27,32 @@ public class UserReturnBuilderImpl implements UserReturnBuilder {
     }
 
     @Override
-    public void setId(Long id) {
+    public UserReturnBuilder setId(Long id) {
         this.userReturn.setId(id);
+        return new UserReturnBuilderImpl(userReturn);
     }
 
     @Override
-    public void setReturnDate(Date returnDate) {
+    public UserReturnBuilder setReturnDate(Date returnDate) {
         this.userReturn.setReturnDate(returnDate);
+        return new UserReturnBuilderImpl(userReturn);
     }
 
     @Override
-    public void setBook(Book book) {
+    public UserReturnBuilder setBook(Book book) {
         this.userReturn.setBook(book);
+        return new UserReturnBuilderImpl(userReturn);
     }
 
     @Override
-    public void setTickets(Set<Ticket> tickets) {
+    public UserReturnBuilder setTickets(Set<Ticket> tickets) {
         this.userReturn.setTickets(tickets);
+        return new UserReturnBuilderImpl(userReturn);
     }
 
     @Override
-    public void setUser(User user) {
+    public UserReturnBuilder setUser(User user) {
         this.userReturn.setUser(user);
+        return new UserReturnBuilderImpl(userReturn);
     }
 }

@@ -9,8 +9,12 @@ public class TicketBuilderImpl implements TicketBuilder {
 
     private Ticket ticket;
 
-    public TicketBuilderImpl(Ticket ticket) {
+    private TicketBuilderImpl(Ticket ticket) {
         this.ticket = ticket;
+    }
+
+    public TicketBuilderImpl() {
+        ticket = new Ticket();
     }
 
     @Override
@@ -19,27 +23,32 @@ public class TicketBuilderImpl implements TicketBuilder {
     }
 
     @Override
-    public void setId(Long id) {
+    public TicketBuilder setId(Long id) {
         this.ticket.setId(id);
+        return new TicketBuilderImpl(ticket);
     }
 
     @Override
-    public void setFine(Double fine) {
+    public TicketBuilder setFine(Double fine) {
         this.ticket.setFine(fine);
+        return new TicketBuilderImpl(ticket);
     }
 
     @Override
-    public void setTicketType(TicketType ticketType) {
+    public TicketBuilder setTicketType(TicketType ticketType) {
         this.ticket.setTicketType(ticketType);
+        return new TicketBuilderImpl(ticket);
     }
 
     @Override
-    public void setIsPaid(Boolean isPaid) {
+    public TicketBuilder setIsPaid(Boolean isPaid) {
         this.ticket.setIsPaid(isPaid);
+        return new TicketBuilderImpl(ticket);
     }
 
     @Override
-    public void setUserReturn(UserReturn userReturn) {
+    public TicketBuilder setUserReturn(UserReturn userReturn) {
         this.ticket.setUserReturn(userReturn);
+        return new TicketBuilderImpl(ticket);
     }
 }

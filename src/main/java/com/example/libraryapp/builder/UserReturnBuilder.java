@@ -10,14 +10,14 @@ import java.util.Set;
 
 public interface UserReturnBuilder extends GeneralBuilder<UserReturn>{
 
-    void setId(Long id);
+    UserReturnBuilder setId(Long id);
 
-    void setReturnDate(Date returnDate);
+    UserReturnBuilder setReturnDate(Date returnDate);
 
-    void setBook(Book book);
+    UserReturnBuilder setBook(Book book);
 
-    void setTickets(Set<Ticket> tickets);
+    UserReturnBuilder setTickets(Set<Ticket> tickets);
 
-    void setUser(User user);
+    UserReturnBuilder setUser(User user);
 
 }

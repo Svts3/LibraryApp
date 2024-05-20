@@ -8,15 +8,15 @@ import java.util.Date;
 
 public interface UserBorrowBuilder extends GeneralBuilder<UserBorrow>{
 
-    void setId(Long id);
+    UserBorrowBuilder setId(Long id);
 
-    void setIssueDate(Date issueDate);
+    UserBorrowBuilder setIssueDate(Date issueDate);
 
-    void setDeadlineDate(Date deadlineDate);
+    UserBorrowBuilder setDeadlineDate(Date deadlineDate);
 
-    void setUser(User user);
+    UserBorrowBuilder setUser(User user);
 
-    void setBook(Book book);
+    UserBorrowBuilder setBook(Book book);
 
 
 }

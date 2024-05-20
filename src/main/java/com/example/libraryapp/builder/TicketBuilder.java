@@ -6,13 +6,13 @@ import com.example.libraryapp.model.UserReturn;
 
 public interface TicketBuilder extends GeneralBuilder<Ticket>{
 
-    void setId(Long id);
+    TicketBuilder setId(Long id);
 
-    void setFine(Double fine);
+    TicketBuilder setFine(Double fine);
 
-    void setTicketType(TicketType ticketType);
+    TicketBuilder setTicketType(TicketType ticketType);
 
-    void setIsPaid(Boolean isPaid);
+    TicketBuilder setIsPaid(Boolean isPaid);
 
-    void setUserReturn(UserReturn userReturn);
+    TicketBuilder setUserReturn(UserReturn userReturn);
 }

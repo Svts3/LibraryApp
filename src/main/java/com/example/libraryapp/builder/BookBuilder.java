@@ -1,5 +1,6 @@
 package com.example.libraryapp.builder;
 
+import com.example.libraryapp.builder.impl.BookBuilderImpl;
 import com.example.libraryapp.model.*;
 
 import java.util.Date;
@@ -7,27 +8,27 @@ import java.util.Set;
 
 public interface BookBuilder extends GeneralBuilder<Book>{
 
-    void setId(Long id);
+    BookBuilder setId(Long id);
 
-    void setTitle(String title);
+    BookBuilder setTitle(String title);
 
-    void setSecurityDeposit(Double securityDeposit);
+    BookBuilder setSecurityDeposit(Double securityDeposit);
 
-    void setValueRate(Integer valueRate);
+    BookBuilder setValueRate(Integer valueRate);
 
-    void setCreationDate(Date creationDate);
+    BookBuilder setCreationDate(Date creationDate);
 
-    void setLastModifiedDate(Date lastModifiedDate);
+    BookBuilder setLastModifiedDate(Date lastModifiedDate);
 
-    void setAuthors(Set<Author> authors);
+    BookBuilder setAuthors(Set<Author> authors);
 
-    void setGenres(Set<BookGenre>genres);
+    BookBuilder setGenres(Set<BookGenre>genres);
 
-    void setBookStatus(BookStatus bookStatus);
+    BookBuilder setBookStatus(BookStatus bookStatus);
 
-    void setCoverType(CoverType coverType);
+    BookBuilder setCoverType(CoverType coverType);
 
-    void setDiscount(Discount discount);
+    BookBuilder setDiscount(Discount discount);
 
 
 }
