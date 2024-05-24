@@ -48,7 +48,10 @@ public class Book extends BaseEntity {
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
 
-    @ManyToMany(mappedBy = "books")
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JoinTable(name = "authors_books",
+            joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"))
     private Set<Author> authors;
 
     @ManyToMany
@@ -58,7 +61,7 @@ public class Book extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "book_status")
-    private BookStatus bookStatus;
+    private BookStatus bookStatus=BookStatus.IS_AVAILABLE;
 
     @ManyToOne
     @JoinColumn(name = "cover_type_id", referencedColumnName = "id")

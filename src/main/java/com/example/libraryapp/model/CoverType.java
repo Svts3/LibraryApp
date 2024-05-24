@@ -15,7 +15,7 @@ import lombok.Setter;
 public class CoverType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "cover_type")

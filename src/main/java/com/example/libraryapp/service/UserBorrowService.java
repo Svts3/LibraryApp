@@ -7,8 +7,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Date;
 import java.util.List;
 
-public interface UserBorrowService extends
-        Findable<UserBorrow, Long>, Persistable<UserBorrow, Long>{
+public interface UserBorrowService extends Findable<UserBorrow, Long>, Persistable<UserBorrow, Long>{
+
+    UserBorrow borrowBook(UserBorrow userBorrow);
 
     List<UserBorrow> findByUserId(Long userId);
 

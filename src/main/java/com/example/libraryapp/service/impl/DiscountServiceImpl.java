@@ -8,6 +8,7 @@ import com.example.libraryapp.model.DiscountMeasure;
 import com.example.libraryapp.repository.DiscountRepository;
 import com.example.libraryapp.service.BookService;
 import com.example.libraryapp.service.DiscountService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +28,16 @@ public class DiscountServiceImpl implements DiscountService {
         this.bookService = bookService;
     }
 
+    @Transactional
     @Override
-    public Discount assignDiscountToBook(DiscountMeasure discountMeasure, Double discountValue, Long bookId) {
+    public Discount assignDiscountToBook(Discount discount, Long bookId) {
         Optional<Discount> discountOptional = discountRepository
-                .findByValueAndDiscountMeasure(discountValue, discountMeasure.getMeasureName());
+                .findByValueAndDiscountMeasure(discount.getValue(),
+                        discount.getDiscountMeasure());
 
         if (discountOptional.isEmpty()) {
-            discountOptional = Optional.of(discountRepository.save(new Discount(discountValue,
-                    discountMeasure)));
+            discountOptional = Optional.of(discountRepository.save(new Discount(discount.getValue(),
+                    discount.getDiscountMeasure())));
         }
 
         Book book = bookService.findById(bookId);
@@ -42,6 +45,7 @@ public class DiscountServiceImpl implements DiscountService {
         return discountOptional.get();
     }
 
+    @Transactional
     @Override
     public Discount revokeDiscountFromBook(Long bookId) {
         Book book = bookService.findById(bookId);
@@ -49,13 +53,14 @@ public class DiscountServiceImpl implements DiscountService {
             throw new DiscountRevokeException(String.format("No discounts are assigned to the Book[ID=%d]",
                     bookId));
         }
+        Discount discount = book.getDiscount();
         book.setDiscount(null);
         bookService.save(book);
-        return book.getDiscount();
+        return discount;
     }
 
     @Override
-    public Discount findByValueAndDiscountMeasure(Double value, String measure) {
+    public Discount findByValueAndDiscountMeasure(Double value, DiscountMeasure measure) {
         return discountRepository.findByValueAndDiscountMeasure(value, measure).orElseThrow(
                 ()->new DiscountNotFoundException(
                         String.format("Discount[value=%f, measure=%s] was not found!", value, measure)));
@@ -76,7 +81,7 @@ public class DiscountServiceImpl implements DiscountService {
         return discountRepository.findById(aLong).orElseThrow(
                 ()->new DiscountNotFoundException(String.format("Discount[ID=%d] was not found!", aLong)));
     }
-
+    @Transactional
     @Override
     public Discount deleteById(Long aLong) {
         Discount discount = this.findById(aLong);
