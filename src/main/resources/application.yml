@@ -3,9 +3,10 @@ spring:
     url: ${db_url}
     username: ${db_username}
     password: ${db_password}
+
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
     show-sql: true
   security:
@@ -28,6 +29,10 @@ spring:
           jwk-set-uri: ${jwk-set-uri}
   config:
     import: file:env.properties
+  sql:
+    init:
+      mode: always
+
 logging:
   level:
     org:
