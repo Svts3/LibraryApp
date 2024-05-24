@@ -5,6 +5,7 @@ import com.example.libraryapp.mapper.UserMapper;
 import com.example.libraryapp.model.User;
 import com.example.libraryapp.repository.UserRepository;
 import com.example.libraryapp.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,6 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
-    private UserMapper userMapper;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -38,13 +38,15 @@ public class UserServiceImpl implements UserService {
                 ()->new UserNotFoundException(String.format("User[ID=%d] was not found!", aLong)));
     }
 
+    @Transactional
     @Override
     public User update(User entity, Long aLong) {
         User user = findById(aLong);
-        userMapper.updateUser(user, entity);
+        UserMapper.INSTANCE.updateUser(user, entity);
         return userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public User deleteById(Long aLong) {
         User user = findById(aLong);

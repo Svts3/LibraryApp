@@ -9,5 +9,4 @@ public interface AuthorService extends
 
     List<Author> findByBooksId(Long bookId);
 
-    Author findByFirstNameAndLastName(String firstName, String lastName);
 }

@@ -16,7 +16,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     private AuthorRepository  authorRepository;
 
-    private AuthorMapper authorMapper;
 
     @Autowired
     public AuthorServiceImpl(AuthorRepository authorRepository) {
@@ -26,13 +25,6 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public List<Author> findByBooksId(Long bookId) {
         return authorRepository.findByBooksId(bookId);
-    }
-
-    @Override
-    public Author findByFirstNameAndLastName(String firstName, String lastName) {
-        return authorRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(
-                ()->new AuthorNotFoundException(String.format("Author[firstName=%s, lastName=%s] was not found!",
-                        firstName, lastName)));
     }
 
     @Override
@@ -55,7 +47,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Author update(Author entity, Long aLong) {
         Author author = findById(aLong);
-        authorMapper.updateAuthor(author, entity);
+        AuthorMapper.INSTANCE.updateAuthor(author, entity);
         return author;
     }
 

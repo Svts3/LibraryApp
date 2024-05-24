@@ -4,6 +4,7 @@ import com.example.libraryapp.exception.UserBalanceOperationException;
 import com.example.libraryapp.model.User;
 import com.example.libraryapp.service.UserBalanceService;
 import com.example.libraryapp.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class UserBalanceServiceImpl implements UserBalanceService {
         this.userService = userService;
     }
 
+    @Transactional
     @Override
     public User depositToUserBalance(Long userId, Double amount) {
         User user = userService.findById(userId);
@@ -24,6 +26,7 @@ public class UserBalanceServiceImpl implements UserBalanceService {
         return userService.save(user);
     }
 
+    @Transactional
     @Override
     public User withdrawFromUserBalance(Long userId, Double amount) {
         User user = userService.findById(userId);

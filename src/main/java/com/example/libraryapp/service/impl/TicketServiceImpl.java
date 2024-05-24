@@ -1,6 +1,5 @@
 package com.example.libraryapp.service.impl;
 
-import com.example.libraryapp.builder.TicketBuilder;
 import com.example.libraryapp.builder.impl.TicketBuilderImpl;
 import com.example.libraryapp.exception.TicketNotFoundException;
 import com.example.libraryapp.exception.TicketTypeNotFoundException;
@@ -14,6 +13,7 @@ import com.example.libraryapp.repository.TicketTypeRepository;
 import com.example.libraryapp.repository.UserReturnRepository;
 import com.example.libraryapp.service.TicketService;
 import com.example.libraryapp.service.UserBalanceService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,6 @@ public class TicketServiceImpl implements TicketService {
 
     private UserBalanceService userBalanceService;
 
-    private TicketMapper ticketMapper;
     @Autowired
     public TicketServiceImpl(TicketRepository ticketRepository, TicketTypeRepository ticketTypeRepository,
                              UserReturnRepository userReturnRepository, UserBalanceService userBalanceService) {
@@ -56,13 +55,15 @@ public class TicketServiceImpl implements TicketService {
                 ()->new TicketNotFoundException(String.format("Ticket[ID=%d] was not found!", aLong)));
     }
 
+    @Transactional
     @Override
     public Ticket update(Ticket entity, Long aLong) {
         Ticket ticket = findById(aLong);
-        ticketMapper.updateTicket(ticket, entity);
+        TicketMapper.INSTANCE.updateTicket(ticket, entity);
         return ticketRepository.save(ticket);
     }
 
+    @Transactional
     @Override
     public Ticket deleteById(Long aLong) {
         Ticket ticket = findById(aLong);
@@ -70,25 +71,24 @@ public class TicketServiceImpl implements TicketService {
         return ticket;
     }
 
+    @Transactional
     @Override
-    public UserReturn assignTicketToUserReturn(String ticketType, Double fine, Long userId, Long userReturnId) {
-        TicketType ticketType1 = ticketTypeRepository.findByTicketType(ticketType).orElseThrow(
-                ()->new TicketTypeNotFoundException(String.format("TicketType[type=%s] was not found!",
-                        ticketType)));
+    public UserReturn assignTicketToUserReturn(Ticket ticket, Long userReturnId) {
         UserReturn userReturn = userReturnRepository.findById(userReturnId).orElseThrow(
                 ()->new UserReturnNotFoundException(String.format("UserReturn[ID=%d] was not found!",
                         userReturnId)));
 
-        Ticket ticket = new TicketBuilderImpl()
-        .setTicketType(ticketType1)
-        .setFine(fine)
+        Ticket ticket1 = new TicketBuilderImpl()
+        .setTicketType(ticket.getTicketType())
+        .setFine(ticket.getFine())
         .setUserReturn(userReturn)
                 .build();
 
-        ticketRepository.save(ticket);
+        ticketRepository.save(ticket1);
         return userReturn;
     }
 
+    @Transactional
     @Override
     public UserReturn revokeTicketForUserReturn(Long ticketId, Long userReturnId) {
         UserReturn userReturn = userReturnRepository.findById(userReturnId).orElseThrow(
@@ -99,6 +99,7 @@ public class TicketServiceImpl implements TicketService {
         return userReturnRepository.save(userReturn);
     }
 
+    @Transactional
     @Override
     public Ticket payTicket(Long userId, Long ticketId) {
         Ticket ticket = findById(ticketId);
