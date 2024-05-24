@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, })
 @SQLDelete(sql="""
         UPDATE users SET deleted=true WHERE id=?
         """)

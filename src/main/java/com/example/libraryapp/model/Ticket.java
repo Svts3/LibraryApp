@@ -27,12 +27,12 @@ public class Ticket extends BaseEntity {
     @Column(name = "fine")
     private Double fine;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "ticket_type_id", referencedColumnName = "id")
     private TicketType ticketType;
 
     @Column(name = "is_paid")
-    private Boolean isPaid;
+    private Boolean isPaid=false;
 
     @ManyToOne
     private UserReturn userReturn;
