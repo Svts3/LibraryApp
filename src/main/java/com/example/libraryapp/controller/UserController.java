@@ -2,7 +2,10 @@ package com.example.libraryapp.controller;
 
 import com.example.libraryapp.dto.UserDTO;
 import com.example.libraryapp.mapper.UserMapper;
+import com.example.libraryapp.model.ReportType;
 import com.example.libraryapp.model.User;
+import com.example.libraryapp.model.interfaces.Report;
+import com.example.libraryapp.service.ReportService;
 import com.example.libraryapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +16,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private UserService userService;
+    private ReportService reportService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ReportService reportService) {
         this.userService = userService;
+        this.reportService = reportService;
     }
 
 
@@ -53,6 +58,26 @@ public class UserController {
         User user = userService.deleteById(id);
         UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(user);
         return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/{id}/report")
+    public ResponseEntity<Report> balanceById(@PathVariable("id")Long id, @RequestParam("type") String reportType){
+        User user = userService.findById(id);
+
+        String strategy = "sfewef3weffdsf";
+        if(reportType.equals(ReportType.BORROWED_BOOKS_REPORT.toString().toLowerCase())){
+            strategy = "borrowed_books_report";
+        } else if (reportType.equals(ReportType.USER_BALANCE_REPORT.toString().toLowerCase())){
+            strategy = "user_balance_report";
+        } else if (reportType.equals(ReportType.ALL_BOOKS_REPORT.toString().toLowerCase())){
+            strategy = "all_books_report";
+        }
+
+        System.out.println(strategy);
+
+        Report report = reportService.makeReport(user.getId(), strategy);
+
+        return ResponseEntity.ok(report);
     }
 
 }
