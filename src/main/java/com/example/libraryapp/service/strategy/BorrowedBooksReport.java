@@ -1,15 +1,14 @@
-package com.example.libraryapp.model;
+package com.example.libraryapp.service.strategy;
 
-import com.example.libraryapp.model.interfaces.Report;
+import com.example.libraryapp.model.Book;
+import com.example.libraryapp.service.strategy.Report;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component

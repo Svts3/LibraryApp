@@ -1,9 +1,6 @@
-package com.example.libraryapp.model;
+package com.example.libraryapp.service.strategy;
 
-import com.example.libraryapp.model.interfaces.Report;
-import com.example.libraryapp.service.BookService;
-import com.example.libraryapp.service.ReportService;
-import lombok.AllArgsConstructor;
+import com.example.libraryapp.service.strategy.Report;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

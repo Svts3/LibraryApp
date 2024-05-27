@@ -9,10 +9,7 @@ import com.example.libraryapp.model.BookStatus;
 import com.example.libraryapp.model.UserBorrow;
 import com.example.libraryapp.model.UserReturn;
 import com.example.libraryapp.repository.UserReturnRepository;
-import com.example.libraryapp.service.BookService;
-import com.example.libraryapp.service.UserBalanceService;
-import com.example.libraryapp.service.UserBorrowService;
-import com.example.libraryapp.service.UserReturnService;
+import com.example.libraryapp.service.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,13 +30,17 @@ public class UserReturnServiceImpl implements UserReturnService {
 
     private BookService bookService;
 
+    private DiscountCalculator discountCalculator;
+
     @Autowired
     public UserReturnServiceImpl(UserReturnRepository userReturnRepository, UserBorrowService userBorrowService,
-                                 UserBalanceService userBalanceService, BookService bookService) {
+                                 UserBalanceService userBalanceService, BookService bookService,
+                                 DiscountCalculator discountCalculator) {
         this.userReturnRepository = userReturnRepository;
         this.userBorrowService = userBorrowService;
         this.userBalanceService = userBalanceService;
         this.bookService = bookService;
+        this.discountCalculator = discountCalculator;
     }
 
     @Override
@@ -80,8 +81,12 @@ public class UserReturnServiceImpl implements UserReturnService {
 
         Book book = userReturn.getBook();
         book.setBookStatus(BookStatus.IS_AVAILABLE);
+
+        Double bookSecurityDepositWithDiscount = discountCalculator
+                .calculateDiscount(book, userBorrow.getUser());
+
         userBalanceService.depositToUserBalance(userReturnRequest.getUser().getId(),
-                book.getSecurityDeposit());
+                bookSecurityDepositWithDiscount);
 
         bookService.save(book);
         return userReturn;

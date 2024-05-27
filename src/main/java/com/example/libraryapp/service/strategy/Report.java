@@ -1,4 +1,4 @@
-package com.example.libraryapp.model.interfaces;
+package com.example.libraryapp.service.strategy;
 
 public interface Report {
     String name = null;

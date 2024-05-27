@@ -1,21 +1,16 @@
-package com.example.libraryapp.service.impl;
+package com.example.libraryapp.service.strategy.impl;
 
 import com.example.libraryapp.model.*;
-import com.example.libraryapp.model.interfaces.Report;
+import com.example.libraryapp.service.strategy.*;
 import com.example.libraryapp.service.BookService;
-import com.example.libraryapp.service.ReportService;
 import com.example.libraryapp.service.UserBorrowService;
 import com.example.libraryapp.service.UserService;
-import org.apache.el.lang.FunctionMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.spel.spi.Function;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 @Service
 public class ReportServiceImpl implements ReportService {

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -34,7 +35,7 @@ public class BookDTO {
 
     private BookStatus bookStatus;
 
-    private Set<BookGenre>bookGenres;
+    private Set<BookGenre> genres;
 
 
 }
