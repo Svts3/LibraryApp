@@ -25,6 +25,10 @@ public class Discount {
     @Column(name = "discount_measure")
     private DiscountMeasure discountMeasure;
 
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_category_id", referencedColumnName = "id")
+    private UserCategory userCategory;
+
     public Discount(Double value, DiscountMeasure discountMeasure) {
         this.value = value;
         this.discountMeasure = discountMeasure;

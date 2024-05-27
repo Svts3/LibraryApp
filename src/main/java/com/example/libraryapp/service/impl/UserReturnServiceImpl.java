@@ -70,29 +70,34 @@ public class UserReturnServiceImpl implements UserReturnService {
     @Transactional
     @Override
     public UserReturn returnBook(UserReturnRequest userReturnRequest) {
-        Optional<UserBorrow> userBorrow = userBorrowService.findByUserId(userReturnRequest.getUser().getId())
-                .stream()
-                .filter((borrow) -> borrow.getBook().getId().equals(userReturnRequest.getBook().getId()))
-                .filter((borrow)->borrow.getUser().getId().equals(userReturnRequest.getUser().getId()))
-                .max(Comparator.comparing(UserBorrow::getIssueDate));
-
-        if (userBorrow.isEmpty()) {
-            throw new BookReturnException(String.format("Book[ID=%d] was not borrowed by User[ID=%d]",
-                    userReturnRequest.getBook().getId(), userReturnRequest.getUser().getId()));
-        }
+        UserBorrow userBorrow = findUserBorrows(userReturnRequest);
 
         UserReturn userReturn = new UserReturnBuilderImpl()
-                .setBook(userBorrow.get().getBook())
-                .setUser(userBorrow.get().getUser())
+                .setBook(userBorrow.getBook())
+                .setUser(userBorrow.getUser())
                 .build();
         userReturn = this.save(userReturn);
 
         Book book = userReturn.getBook();
         book.setBookStatus(BookStatus.IS_AVAILABLE);
-        userBalanceService.depositToUserBalance(userReturnRequest.getUser().getId(), book.getSecurityDeposit());
+        userBalanceService.depositToUserBalance(userReturnRequest.getUser().getId(),
+                book.getSecurityDeposit());
 
         bookService.save(book);
         return userReturn;
+    }
+
+    private UserBorrow findUserBorrows(UserReturnRequest userReturnRequest) {
+        Optional<UserBorrow> userBorrow = userBorrowService.findByUserId(userReturnRequest.getUser().getId())
+                .stream()
+                .filter((borrow) -> borrow.getBook().getId().equals(userReturnRequest.getBook().getId()))
+                .filter((borrow)->borrow.getUser().getId().equals(userReturnRequest.getUser().getId()))
+                .max(Comparator.comparing(UserBorrow::getIssueDate));
+        if (userBorrow.isEmpty()) {
+            throw new BookReturnException(String.format("Book[ID=%d] was not borrowed by User[ID=%d]",
+                    userReturnRequest.getBook().getId(), userReturnRequest.getUser().getId()));
+        }
+        return userBorrow.get();
     }
 
     @Override

@@ -34,5 +34,7 @@ public class BookDTO {
 
     private BookStatus bookStatus;
 
+    private Set<BookGenre>bookGenres;
+
 
 }
