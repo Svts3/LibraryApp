@@ -2,14 +2,11 @@ package com.example.libraryapp.service.impl;
 
 import com.example.libraryapp.builder.impl.TicketBuilderImpl;
 import com.example.libraryapp.exception.TicketNotFoundException;
-import com.example.libraryapp.exception.TicketTypeNotFoundException;
 import com.example.libraryapp.exception.UserReturnNotFoundException;
 import com.example.libraryapp.mapper.TicketMapper;
 import com.example.libraryapp.model.Ticket;
-import com.example.libraryapp.model.TicketType;
 import com.example.libraryapp.model.UserReturn;
 import com.example.libraryapp.repository.TicketRepository;
-import com.example.libraryapp.repository.TicketTypeRepository;
 import com.example.libraryapp.repository.UserReturnRepository;
 import com.example.libraryapp.service.TicketService;
 import com.example.libraryapp.service.UserBalanceService;
@@ -24,17 +21,16 @@ public class TicketServiceImpl implements TicketService {
 
     private TicketRepository ticketRepository;
 
-    private TicketTypeRepository ticketTypeRepository;
 
     private UserReturnRepository userReturnRepository;
 
     private UserBalanceService userBalanceService;
 
     @Autowired
-    public TicketServiceImpl(TicketRepository ticketRepository, TicketTypeRepository ticketTypeRepository,
-                             UserReturnRepository userReturnRepository, UserBalanceService userBalanceService) {
+    public TicketServiceImpl(TicketRepository ticketRepository,
+                             UserReturnRepository userReturnRepository,
+                             UserBalanceService userBalanceService) {
         this.ticketRepository = ticketRepository;
-        this.ticketTypeRepository = ticketTypeRepository;
         this.userReturnRepository = userReturnRepository;
         this.userBalanceService = userBalanceService;
     }
@@ -52,7 +48,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Ticket findById(Long aLong) {
         return ticketRepository.findById(aLong).orElseThrow(
-                ()->new TicketNotFoundException(String.format("Ticket[ID=%d] was not found!", aLong)));
+                () -> new TicketNotFoundException(String.format("Ticket[ID=%d] was not found!", aLong)));
     }
 
     @Transactional
@@ -73,30 +69,31 @@ public class TicketServiceImpl implements TicketService {
 
     @Transactional
     @Override
-    public UserReturn assignTicketToUserReturn(Ticket ticket, Long userReturnId) {
+    public Ticket assignTicketToUserReturn(Ticket ticket, Long userReturnId) {
         UserReturn userReturn = userReturnRepository.findById(userReturnId).orElseThrow(
-                ()->new UserReturnNotFoundException(String.format("UserReturn[ID=%d] was not found!",
+                () -> new UserReturnNotFoundException(String.format("UserReturn[ID=%d] was not found!",
                         userReturnId)));
 
         Ticket ticket1 = new TicketBuilderImpl()
-        .setTicketType(ticket.getTicketType())
-        .setFine(ticket.getFine())
-        .setUserReturn(userReturn)
+                .setTicketType(ticket.getTicketType())
+                .setFine(ticket.getFine())
+                .setUserReturn(userReturn)
                 .build();
-
-        ticketRepository.save(ticket1);
-        return userReturn;
+        return ticketRepository.save(ticket1);
     }
 
     @Transactional
     @Override
-    public UserReturn revokeTicketForUserReturn(Long ticketId, Long userReturnId) {
-        UserReturn userReturn = userReturnRepository.findById(userReturnId).orElseThrow(
-                ()->new UserReturnNotFoundException(String.format("UserReturn[ID=%d] was not found!", userReturnId)));
+    public Ticket revokeTicketForUserReturn(Long ticketId) {
 
-        userReturn.getTickets().removeIf(t->t.getId().equals(ticketId));
+        Ticket ticket = this.findById(ticketId);
 
-        return userReturnRepository.save(userReturn);
+        ticket.setUserReturn(null);
+        ticket = this.save(ticket);
+
+        this.deleteById(ticketId);
+
+        return ticket;
     }
 
     @Transactional

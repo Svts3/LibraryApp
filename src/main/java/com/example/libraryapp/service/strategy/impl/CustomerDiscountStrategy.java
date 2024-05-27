@@ -1,8 +1,7 @@
-package com.example.libraryapp.service.impl;
+package com.example.libraryapp.service.strategy.impl;
 
 import com.example.libraryapp.model.Book;
-import com.example.libraryapp.model.UserCategory;
-import com.example.libraryapp.service.DiscountStrategy;
+import com.example.libraryapp.service.strategy.DiscountStrategy;
 
 public class CustomerDiscountStrategy implements DiscountStrategy {
 
