@@ -47,19 +47,18 @@ public class TicketController {
     }
 
     @PostMapping("/user-return/{returnId}")
-    public ResponseEntity<UserReturnDTO> assignTicketToUserReturn(@RequestBody Ticket ticket,
+    public ResponseEntity<TicketDTO> assignTicketToUserReturn(@RequestBody Ticket ticket,
                                                                   @PathVariable("returnId") Long userReturnId){
-        UserReturn userReturn = ticketService.assignTicketToUserReturn(ticket, userReturnId);
-        UserReturnDTO userReturnDTO = UserReturnMapper.INSTANCE.userReturnToUserReturnDTO(userReturn);
-        return ResponseEntity.ok(userReturnDTO);
+        Ticket ticket1 = ticketService.assignTicketToUserReturn(ticket, userReturnId);
+        TicketDTO ticketDTO = TicketMapper.INSTANCE.ticketToTicketDTO(ticket1);
+        return ResponseEntity.ok(ticketDTO);
     }
 
-    @PostMapping("/{id}/user-return/{returnId}/revoke")
-    ResponseEntity<UserReturnDTO> revokeTicketForUserReturn(@PathVariable("id")Long ticketId,
-                                                            @PathVariable("returnId")Long returnId){
-        UserReturn userReturn = ticketService.revokeTicketForUserReturn(ticketId, returnId);
-        UserReturnDTO userReturnDTO = UserReturnMapper.INSTANCE.userReturnToUserReturnDTO(userReturn);
-        return ResponseEntity.ok(userReturnDTO);
+    @PostMapping("/{id}/revoke")
+    ResponseEntity<TicketDTO> revokeTicket(@PathVariable("id")Long ticketId){
+        Ticket ticket = ticketService.revokeTicketForUserReturn(ticketId);
+        TicketDTO ticketDTO = TicketMapper.INSTANCE.ticketToTicketDTO(ticket);
+        return ResponseEntity.ok(ticketDTO);
     }
 
     @PatchMapping("/{id}")
