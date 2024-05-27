@@ -34,3 +34,10 @@ INSERT INTO cover_types (cover_type) VALUES ('Large Print');
 INSERT INTO cover_types (cover_type) VALUES ('Pamphlet');
 INSERT INTO cover_types (cover_type) VALUES ('Comic');
 INSERT INTO cover_types (cover_type) VALUES ('Graphic Novel');
+
+INSERT INTO user_categories(category_name) VALUES ('CUSTOMER');
+INSERT INTO user_categories(category_name) VALUES('STUDENT');
+INSERT INTO user_categories(category_name) VALUES('SENIOR');
+INSERT INTO user_categories(category_name) VALUES('FREQUENT_BORROWER');
+
+
