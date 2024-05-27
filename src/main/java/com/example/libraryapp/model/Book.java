@@ -50,11 +50,11 @@ public class Book extends BaseEntity {
 
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "authors_books",
-            joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"))
     private Set<Author> authors;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "books_genres", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
     private Set<BookGenre> genres;
