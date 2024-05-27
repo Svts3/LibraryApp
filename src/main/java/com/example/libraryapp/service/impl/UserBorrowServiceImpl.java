@@ -32,9 +32,7 @@ public class UserBorrowServiceImpl implements UserBorrowService {
 
 
     @Autowired
-    public UserBorrowServiceImpl(UserBorrowRepository userBorrowRepository,
-                                 UserBalanceService userBalanceService, BookService bookService,
-                                 UserService userService) {
+    public UserBorrowServiceImpl(UserBorrowRepository userBorrowRepository, UserBalanceService userBalanceService, BookService bookService, UserService userService) {
         this.userBorrowRepository = userBorrowRepository;
         this.userBalanceService = userBalanceService;
         this.bookService = bookService;
@@ -48,10 +46,9 @@ public class UserBorrowServiceImpl implements UserBorrowService {
 
     @Override
     public UserBorrow findById(Long aLong) {
-        return userBorrowRepository.findById(aLong).orElseThrow(
-                () -> new UserBorrowNotFoundException(String.format("UserBorrow[ID=%d] was not found!",
-                        aLong)));
+        return userBorrowRepository.findById(aLong).orElseThrow(() -> new UserBorrowNotFoundException(String.format("UserBorrow[ID=%d] was not found!", aLong)));
     }
+
     @Transactional
     @Override
     public UserBorrow borrowBook(UserBorrow userBorrow) {
@@ -62,17 +59,35 @@ public class UserBorrowServiceImpl implements UserBorrowService {
         UserBorrow userBorrow1 = new UserBorrowBuilderImpl()
                 .setUser(user)
                 .setBook(book)
-                .setIssueDate(userBorrow.getIssueDate())
+                .setIssueDate(userBorrow
+                        .getIssueDate())
                 .setDeadlineDate(userBorrow.getDeadlineDate())
                 .build();
         userBorrow1 = this.save(userBorrow1);
 
-        userBalanceService.withdrawFromUserBalance(user.getId(), book.getSecurityDeposit());
+        Double securityDeposit = calculateDiscount(book, user);
+        userBalanceService.withdrawFromUserBalance(user.getId(), securityDeposit);
 
         book.setBookStatus(BookStatus.IS_BORROWED);
         bookService.save(book);
 
         return userBorrow1;
+    }
+
+    private Double calculateDiscount(Book book, User user) {
+        DiscountStrategyExecutor discountStrategyExecutor;
+
+        String userCategoryName = user.getUserCategory().getCategoryName();
+        if (userCategoryName.equalsIgnoreCase("STUDENT")) {
+            discountStrategyExecutor = new DiscountStrategyExecutor(new StudentDiscountStrategy());
+        } else if (userCategoryName.equalsIgnoreCase("SENIOR")) {
+            discountStrategyExecutor = new DiscountStrategyExecutor(new SeniorDiscountStrategy());
+        } else if (userCategoryName.equalsIgnoreCase("FREQUENT_BORROWER")) {
+            discountStrategyExecutor = new DiscountStrategyExecutor(new FrequentBorrowerDiscountStrategy());
+        } else {
+            discountStrategyExecutor = new DiscountStrategyExecutor(new CustomerDiscountStrategy());
+        }
+        return discountStrategyExecutor.executeStrategy(book);
     }
 
     private void checkBookStatus(Book book) {
