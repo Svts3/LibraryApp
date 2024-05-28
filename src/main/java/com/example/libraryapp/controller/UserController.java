@@ -33,6 +33,13 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @GetMapping("/byEmail/{email}")
+    public ResponseEntity<UserDTO>findById(@PathVariable("email")String email){
+        User user = userService.findByEmail(email);
+        UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(user);
+        return ResponseEntity.ok(userDTO);
+    }
+
     @GetMapping("/book/{id}")
     public ResponseEntity<UserDTO>findByBookId(@PathVariable("id")Long id){
         User user = userService.findByBookId(id);

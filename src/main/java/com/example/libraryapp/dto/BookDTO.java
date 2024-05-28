@@ -1,9 +1,6 @@
 package com.example.libraryapp.dto;
 
-import com.example.libraryapp.model.BookGenre;
-import com.example.libraryapp.model.BookStatus;
-import com.example.libraryapp.model.CoverType;
-import com.example.libraryapp.model.Discount;
+import com.example.libraryapp.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +33,8 @@ public class BookDTO {
     private BookStatus bookStatus;
 
     private Set<BookGenre> genres;
+
+    private Set<AuthorDTO> authors;
 
 
 }

@@ -1,5 +1,6 @@
 package com.example.libraryapp.service.strategy;
 
+import com.example.libraryapp.dto.BookDTO;
 import com.example.libraryapp.model.Book;
 import com.example.libraryapp.service.strategy.Report;
 import lombok.AllArgsConstructor;
@@ -8,8 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
@@ -18,5 +19,5 @@ import java.util.Map;
 @Setter
 public class BorrowedBooksReport implements Report {
     private String userEmail;
-    private Map<Book, Boolean> borrowedBooks = new HashMap<Book, Boolean>();
+    private List<List<Object>> borrowedBooks;
 }

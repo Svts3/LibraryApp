@@ -1,5 +1,8 @@
 package com.example.libraryapp.service.strategy.impl;
 
+import com.example.libraryapp.dto.BookDTO;
+import com.example.libraryapp.mapper.BookMapper;
+import com.example.libraryapp.mapper.BookMapperImpl;
 import com.example.libraryapp.model.*;
 import com.example.libraryapp.service.strategy.*;
 import com.example.libraryapp.service.BookService;
@@ -8,9 +11,8 @@ import com.example.libraryapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -56,12 +58,32 @@ public class ReportServiceImpl implements ReportService {
         User user = userService.findById(userId);
         List<UserBorrow> borrowedBooksByUser = userBorrowService.findByUserId(userId);
 
-        Map<Book, Boolean> borrowedBooks = new HashMap();
+        List<List<Object>> borrowedBooks = new ArrayList<>();
+
+        List<String> booksNames = new ArrayList<>();
+
         for(UserBorrow userBorrow : borrowedBooksByUser){
-            borrowedBooks.put(
-                    userBorrow.getBook(),
-                    userBorrow.getIssueDate().before(userBorrow.getDeadlineDate())
-            );
+            if(userBorrow.getBook().getBookStatus().equals(BookStatus.IS_AVAILABLE) && !booksNames.contains(userBorrow.getBook().getTitle())) {
+                booksNames.add(userBorrow.getBook().getTitle());
+
+                List<Date> dates = new ArrayList<>();
+                List<Object> map = new ArrayList<>();
+
+                dates.add(userBorrow.getIssueDate());
+                dates.add(userBorrow.getDeadlineDate());
+
+//                map.put(
+//                        BookMapper.INSTANCE.bookToBookDTO(userBorrow.getBook()),
+//                        dates
+//                );
+
+                map.add(BookMapper.INSTANCE.bookToBookDTO(userBorrow.getBook()));
+                map.add(dates);
+
+                borrowedBooks.add(
+                        map
+                );
+            }
         }
 
         return new BorrowedBooksReport(

@@ -12,7 +12,8 @@ import java.util.List;
 @Repository
 public interface UserBorrowRepository extends JpaRepository<UserBorrow, Long> {
 
-    List<UserBorrow> findByUserId(Long userId);
+    @Query("SELECT ub FROM UserBorrow ub WHERE ub.user.id=:userId")
+    List<UserBorrow> findByUserId(@Param("userId") Long userId);
 
     List<UserBorrow>findByBookId(Long bookId);
 
